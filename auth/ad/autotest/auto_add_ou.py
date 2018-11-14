@@ -15,7 +15,7 @@ i=0
 
 attr = {'objectClass': ['organizationalUnit','top']}
 
-for i in range(50):
+for i in range(20):
     j=0
     name=groupname+'-%d'%i
     dn="ou=%s,"%name + fs_dn 

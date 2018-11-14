@@ -27,11 +27,13 @@ def auto_create_user(username, ou):
 i=0
 j=0
 k=0
-
 username = 'auto'
-for i in range(50):
+for i in range(100):
+    auto_create_user("%s%d"%(username,i), "ou=vdi,dc=myadserver,dc=com")
+
+for i in range(20):
     base_ou="ou=ou-%d,ou=vdi,dc=myadserver,dc=com" % (i)
     for j in range(10):
         ou = "ou=ou-%d-%d,%s" % (i,j,base_ou)
-        for k in range(50):
+        for k in range(10):
             auto_create_user("%s%d%d%d"%(username,i,j,k),ou)

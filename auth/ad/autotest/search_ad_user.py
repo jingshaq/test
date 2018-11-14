@@ -2,7 +2,7 @@ import ldap
 import uuid
 from ldap.controls import SimplePagedResultsControl
 
-PAGE_SIZE = 10 
+PAGE_SIZE = 500 
 pg_ctrl = SimplePagedResultsControl(True, size=PAGE_SIZE, cookie="")
 ATTRLIST = ['ou', 'description']
 userdata = []
@@ -17,10 +17,9 @@ def search():
     l.bind_s(user_dn, user_pw)
     
     while True:
-        msgid = l.search_ext(fs_dn,ldap.SCOPE_ONELEVEL,"(objectClass=organizationalUnit)", ATTRLIST,serverctrls=[pg_ctrl])
+        msgid = l.search_ext(fs_dn,ldap.SCOPE_ONELEVEL,"(objectClass=user)", ATTRLIST,serverctrls=[pg_ctrl])
         _a, res_data, _b, srv_ctrls = l.result3(msgid)
         print 'res_data', len(res_data)
-        print res_data
         userdata.extend(res_data)
         cookie = srv_ctrls[0].cookie
         if cookie:
