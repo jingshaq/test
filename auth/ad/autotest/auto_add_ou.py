@@ -15,18 +15,16 @@ i=0
 
 attr = {'objectClass': ['organizationalUnit','top']}
 
-for i in range(20):
+for i in range(50):
     j=0
     name=groupname+'-%d'%i
     dn="ou=%s,"%name + fs_dn 
     attr['name'] = name
     ldif = modlist.addModlist(attr)
     cur_dn = dn
-    print l.add_s(cur_dn,ldif)
-    print "---------------------"
-    for j in range(100):
+    l.add_s(cur_dn,ldif)
+    for j in range(10):
         name=groupname+'-%d'%i+'-%d'%j
-        print name
         attr['name'] = name
         ldif = modlist.addModlist(attr)
         dn = "ou=ou-%s-%s," % (i,j) + cur_dn
