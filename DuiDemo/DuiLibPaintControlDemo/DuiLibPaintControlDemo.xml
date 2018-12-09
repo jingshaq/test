@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window size="800,600">
+  <!-- 窗口的初始尺寸-->
+  <HorizontalLayout bkcolor="#FF00FF00">
+    <!-- 整个窗口的背景-->
+    <Button name="btnMenu" text="选项" float="true" pos="475,28,0,0" width="37" height="19" align="center" normalimage="" hotimage="Menu/btn_menu_hot.png" pushedimage="Menu/btn_menu_hot.png" focusedimage="Menu/btn_menu_hot.png" textcolor="#FF000000" hottextcolor="#FFFFFFFF" pushedtextcolor="#FFFFFFFF" focusedtextcolor="#FFFFFFFF" bkcolor="#FFECE9D8"/>
+    <!-- 按钮的属性，如名称、文本-->
+  </HorizontalLayout>
+</Window>
