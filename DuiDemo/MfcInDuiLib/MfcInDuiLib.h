@@ -59,7 +59,7 @@ public:
 			//这段用MFC 的按钮
 			CWndUI *pUI = new CWndUI();
 			CButton *pBtn = new CButton; // 记得释放内存
-			pBtn->Create(_T("MFC"), WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, CRect(0, 0, 0, 0), CWnd::FromHandle(m_PaintManager.GetPaintWindow()), 0);
+			pBtn->Create(_T("MFC"), WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, CRect(100, 100, 180, 150), CWnd::FromHandle(m_PaintManager.GetPaintWindow()), 0);
 			pUI->Attach(*pBtn);
 
 			// 这段用win32时间控件
