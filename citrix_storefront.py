@@ -112,9 +112,9 @@ class Citrix:
 
     # /Resources/LanchIca
     def resources_launch_ica(self):
-        url = self.build_request_headers(uri="/Resources/LaunchIca/Q29udHJvbGxlci5qZnotemogJFA0OA--.ica")
+        url = self.build_request_headers(uri="/Resources/LaunchIca/c2Yua2dnZyAkUDMy.ica")
         url = url + "?CsrfToken="+self.csrf_token
-        url = url + "&displayNameDesktopTitle=jfz-zj"
+        url = url + "&displayNameDesktopTitle=test-005"
         print "REQUEST:" + url
         cookie_str = self.get_cookie_string(self.cookies)
         print "cookie_str-=-=-=-=-==%s" % cookie_str
@@ -124,13 +124,12 @@ class Citrix:
         self.print_response(response)
 
 if __name__ == "__main__":
-    citrix = Citrix(host="10.11.12.14", base_uri="/Citrix/sfWeb")
+    citrix = Citrix(host="10.11.13.27", base_uri="/Citrix/sfWeb")
     citrix.home_configuration()
     print "\n---------------------------------------\n"
     citrix.get_auth_methods()
     print "\n---------------------------------------\n"
-    # citrix.explicit_auth_login('citrix1@myadserver.com', 'Zhu88jie')
-    citrix.post_credentials_auth_login('citrix2@myadserver.com', 'Zhu88jie')
+    citrix.post_credentials_auth_login('citrix4@myadserver.com', 'Zhu88jie')
     print "\n---------------------------------------\n"
     citrix.resources_list()
     print "\n---------------------------------------\n"
