@@ -66,24 +66,7 @@ int main(int argc, char **argv)
 			break;
 		}
 
-		//        //if(xevent.xkey.keycode == 10)
 		XUngrabKeyboard(display,CurrentTime);
-
- 		// TODO: whatever you want.
-		Window winFocus;
-		int    revert;
-		XGetInputFocus(display, &winFocus, &revert);
-		XKeyEvent event = createKeyEvent(display, winFocus, window, true, xevent.xkey.keycode, 0);
-		XSendEvent(event.display, event.window, True, KeyPressMask, (XEvent *)&event);
-		printf("keydown\n");
-
-		usleep(10000);
-
-		// Send a fake key release event to the window.XKeysymToKeycode(display,XK_D)
-		event = createKeyEvent(display, winFocus, window, false, xevent.xkey.keycode, 0);
-		XSendEvent(event.display, event.window, True, KeyPressMask, (XEvent *)&event);
-
-		printf("keyup\n");
 	}
 	return 0;
 }
