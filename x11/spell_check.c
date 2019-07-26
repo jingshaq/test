@@ -119,7 +119,7 @@ int main(void) {
         
     } else if (e.type == KeyRelease) { 
       key = XKeycodeToKeysym(d, e.xkey.keycode, 0);
-      printf("Release: %c\n", key);
+      printf("Release: %c==%d, keycode=%d\n", key,key,e.xkey.keycode);
       // This is really a hack since it does not correctly handle non-alnum keys.
       if(txtidx > 0) {
         txtidx--;
