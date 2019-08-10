@@ -1,3 +1,33 @@
+HBITMAP BitmapFromIcon(HICON hIcon)
+{
+	HDC hDC = CreateCompatibleDC(NULL);
+	HBITMAP hBitmap = CreateCompatibleBitmap(hDC, GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON));
+	HBITMAP hOldBitmap = (HBITMAP)SelectObject(hDC, hBitmap);
+	DrawIcon(hDC, 0, 0, hIcon);
+	SelectObject(hDC, hOldBitmap);
+	DeleteDC(hDC);
+
+	return hBitmap;
+}
+
+HBITMAP IconToBitmap(HICON Icon_Handle)
+{
+	HDC Screen_Handle = GetDC(NULL);
+	HDC Device_Handle = CreateCompatibleDC(Screen_Handle);
+
+	HBITMAP Bitmap_Handle =
+		CreateCompatibleBitmap(Device_Handle, GetSystemMetrics(SM_CXICON),
+			GetSystemMetrics(SM_CYICON));
+
+	HBITMAP Old_Bitmap = (HBITMAP)SelectObject(Device_Handle, Bitmap_Handle);
+	DrawIcon(Device_Handle, 0, 0, Icon_Handle);
+	SelectObject(Device_Handle, Old_Bitmap);
+
+	DeleteDC(Device_Handle);
+	ReleaseDC(NULL, Screen_Handle);
+	return Bitmap_Handle;
+}
+
 bool SaveBitmapToFile(HBITMAP hBitmap, LPTSTR lpFileName)
 {
 	HDC hDC; //设备描述表    
