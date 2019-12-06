@@ -1,0 +1,22 @@
+[Unit]
+# 服务描述
+Description=Deamon Demo
+# 在网络初始化之后启动
+After=network.target
+
+[Service]
+# 服务类型
+Type=forking
+# 进程退出立即重启
+Restart=always
+
+
+# 工作目录
+WoringDirectory=/home/abel/test
+
+# 启动命令
+ExecStart=/usr/sbin/daemon_demo
+
+[Install]
+# 当系统以多用户方式启动时，这个服务需要被自动运行
+WantedBy=daemon_demo.target
