@@ -1,10 +1,4 @@
 #include "stdafx.h"
-#include <iostream>  
-#include <algorithm>  
-#include <cmath>  
-#include <vector>  
-#include <string>  
-#include <cstring>
 #include <atlbase.h>
 #include <Windows.h>
 #pragma warning(disable:4996)  
@@ -165,10 +159,9 @@ void read_dword()//读取操作表,其类型为DWORD
 
 		if (::RegQueryValueEx(hKEY, _T("DefaultPort"), 0, &dwType, (LPBYTE)&dwValue, &dwSize) != ERROR_SUCCESS)
 		{
-			cout << "错误：无法查询有关的注册表信息" << endl;
+			printf( "错误：无法查询有关的注册表信息\n");
 		}
-
-		cout << "dwValue=" << dwValue << endl;
+		printf("dwValue=%d\n", dwValue);
 	}
 	::RegCloseKey(hKEY);
 }
@@ -185,9 +178,9 @@ void read_reg_sz()//读取操作表,其类型为REG_SZ
 		DWORD dwSize = sizeof(dwValue);
 		if (::RegQueryValueEx(hkey, _T("qingcloud"), 0, &dwSzType, (LPBYTE)&dwValue, &dwSize) != ERROR_SUCCESS)
 		{
-			cout << "无法查询有关的注册表信息" << endl;
+			printf("错误：无法查询有关的注册表信息\n");
 		}
-		cout << dwValue << endl;
+		printf("dwValue=%d\n", dwValue);
 	}
 	::RegCloseKey(hkey);
 }
@@ -208,7 +201,7 @@ void write_dword()//在\SOFTWARE\FreeRDP\FreeRDP\Server文件夹下写入一个test的子键
 		{
 			if (ERROR_SUCCESS != ::RegSetValueEx(hTempKey, _T("Name"), 0, REG_DWORD, (CONST BYTE*)&dwValue, sizeof(DWORD)))
 			{
-				cout << "写入注册表失败" << endl;
+				printf("写入注册表失败\n");
 			}
 		}
 	}
@@ -229,7 +222,7 @@ void write_reg_sz()
 		{
 			if (ERROR_SUCCESS != ::RegSetValueEx(hTempKey, _T("Name"), 0, REG_SZ, (const BYTE*)m_name_set, len))
 			{
-				cout << "写入错误" << endl;
+				printf( "写入错误\n");
 			}
 		}
 	}
@@ -254,7 +247,7 @@ void write_binary()
 		{
 			if (ERROR_SUCCESS != ::RegSetValueEx(hTempKey, _T("Name"), 0, REG_BINARY, (unsigned char *)m_name, 5))
 			{
-				cout << "写入错误" << endl;
+				printf("写入错误\n");
 			}
 		}
 	}
@@ -270,7 +263,7 @@ void delete_value()
 	{
 		if (ERROR_SUCCESS != ::RegDeleteValue(hkey, _T("Name")))
 		{
-			cout << "删除错误" << endl;
+			printf("删除错误\n");
 		}
 	}
 	::RegCloseKey(hkey);
@@ -285,7 +278,7 @@ void delete_key()
 	{
 		if (ERROR_SUCCESS != ::RegDeleteKey(hkey, _T("test")))
 		{
-			cout << "删除错误" << endl;
+			printf("删除错误\n");
 		}
 	}
 	::RegCloseKey(hkey);
