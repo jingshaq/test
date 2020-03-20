@@ -2,8 +2,6 @@
 #include <atlbase.h>
 #include <Windows.h>
 #pragma warning(disable:4996)  
-using namespace std;
-
 #include <Aclapi.h> 
 #pragma comment (lib,"Advapi32.lib")
 
@@ -79,13 +77,12 @@ void SetRegPrivilege()
 	DWORD dwRet;
 
 	// 下面这个字符串的值修改为想要进行权限操作的注册表项，注册表每一级的权限是不一样的，所以需要很具体地指定到某一级
-	LPTSTR SamName = _T("\\\\DESKTOP-AMF11P6\\MACHINE\\SOFTWARE\\FreeRDP\\FreeRDP\\Server");
+	LPTSTR SamName = _T("MACHINE\\SOFTWARE\\TestNode1");
 	PSECURITY_DESCRIPTOR pSD = NULL;
 	PACL pOldDacl = NULL;
 	PACL pNewDacl = NULL;
 	EXPLICIT_ACCESS ea;
 	HKEY hKey = NULL;
-
 
 
 	// 获取主键的DACL 
@@ -120,7 +117,7 @@ void SetRegPrivilege()
 	}
 
 	// 打开SAM的子键 
-	dwRet = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\FreeRDP\\FreeRDP\\Server"),
+	dwRet = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\TestNode1"),
 		0, KEY_ALL_ACCESS, &hKey);
 	if (dwRet != ERROR_SUCCESS)
 	{
@@ -141,157 +138,284 @@ FreeAndExit:
 }
 
 
-//注册表操作是： 64位要加：KEY_WOW64_64KEY权限
-
-void read_dword()//读取操作表,其类型为DWORD
+int find_reg_key(HKEY hKey, LPCTSTR lpSubKey)
 {
-	HKEY hKEY;//定义有关的键，在查询结束时关闭
-			  //打开与路径data_Set相关的hKEY
-
-	LPCTSTR data_set = _T("SOFTWARE\\FreeRDP\\FreeRDP\\Server");
-
-	//访问注册表，hKEY则保存此函数所打开的键的句柄
-	if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, data_set, 0, KEY_READ | KEY_WOW64_64KEY, &hKEY))
+	HKEY hKeyRet;
+	long lError;
+#ifdef _WIN64  
+	if (ERROR_SUCCESS == ::RegOpenKeyEx(hKey, lpSubKey, 0, KEY_READ | KEY_WOW64_64KEY, &hKeyRet))
+#else
+	if (ERROR_SUCCESS == ::RegOpenKeyEx(hKey, lpSubKey, 0, KEY_READ, &hKeyRet))
+#endif
 	{
-		DWORD dwValue;//长整型数据，如果是字符串数据用char数组
-		DWORD dwSize = sizeof(DWORD);
-		DWORD dwType = REG_DWORD;
-
-		if (::RegQueryValueEx(hKEY, _T("DefaultPort"), 0, &dwType, (LPBYTE)&dwValue, &dwSize) != ERROR_SUCCESS)
-		{
-			printf( "错误：无法查询有关的注册表信息\n");
-		}
-		printf("dwValue=%d\n", dwValue);
+		RegCloseKey(hKeyRet);
 	}
-	::RegCloseKey(hKEY);
+	else
+	{
+		return -1;
+	}
+	return 0;
 }
 
-void read_reg_sz()//读取操作表,其类型为REG_SZ
+int create_reg_key(HKEY hKey, LPCTSTR lpSubKey)
 {
-	HKEY hkey;
-	LPCTSTR data_set = _T("SOFTWARE\\FreeRDP\\FreeRDP\\Server");
+	HKEY hKeyRet;
+	TCHAR *sSubKey = NULL;
+	TCHAR *sChildKey = NULL;
+	long lLastError = ERROR_SUCCESS;
+	TCHAR szKey[260] = { 0 };
+	int flag = 0;
 
-	if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, data_set, 0, KEY_READ | KEY_WOW64_64KEY, &hkey))
+	sSubKey = (TCHAR *)malloc(sizeof(TCHAR) * 260);
+	_tcscpy(sSubKey, lpSubKey);
+	sChildKey = _tcstok(sSubKey, _T("\\"));
+	while (sChildKey != NULL && sChildKey != _T(""))
 	{
-		char dwValue[256];
-		DWORD dwSzType = REG_SZ;
-		DWORD dwSize = sizeof(dwValue);
-		if (::RegQueryValueEx(hkey, _T("qingcloud"), 0, &dwSzType, (LPBYTE)&dwValue, &dwSize) != ERROR_SUCCESS)
+		if (flag > 0)
 		{
-			printf("错误：无法查询有关的注册表信息\n");
+			_tcscat(szKey, _T("\\"));
 		}
-		printf("dwValue=%d\n", dwValue);
+		_tcscat(szKey, sChildKey);
+		flag = 1;
+		if (find_reg_key(hKey, szKey) != 0)
+		{
+			lLastError = RegCreateKey(hKey, szKey, &hKeyRet);
+			RegCloseKey(hKeyRet);
+		}
+		if (ERROR_SUCCESS != lLastError)
+			break;
+		sChildKey = _tcstok(NULL, _T("\\"));
 	}
-	::RegCloseKey(hkey);
+
+	free(sSubKey);
+	sSubKey = NULL;
+
+	if (ERROR_SUCCESS != lLastError)
+	{
+		return -1;
+	}
+	return 0;
 }
 
-void write_dword()//在\SOFTWARE\FreeRDP\FreeRDP\Server文件夹下写入一个test的子键，设置其名称为Name，其值为6
-{
-	HKEY hkey;//定义有关的hkey，在查询结束时要关闭
-	HKEY hTempKey;
 
-	DWORD dwValue = 6;
-	DWORD dwSize = sizeof(DWORD);
+int get_reg_value(HKEY hKey, LPCTSTR lpSubKey, LPCTSTR lpValueName, LPDWORD lpType, LPBYTE lpData, LPDWORD lpcbData)
+{
+	HKEY hKeyRet;
+
+#ifdef _WIN64  
+	if (ERROR_SUCCESS == ::RegOpenKeyEx(hKey, lpSubKey, 0, KEY_READ | KEY_WOW64_64KEY, &hKeyRet))
+#else
+	if (ERROR_SUCCESS == ::RegOpenKeyEx(hKey, lpSubKey, 0, KEY_READ, &hKeyRet))
+#endif
+	{
+		if (::RegQueryValueEx(hKeyRet, lpValueName, 0, lpType, lpData, lpcbData) != ERROR_SUCCESS)
+		{
+			::RegCloseKey(hKeyRet);
+			return -1;
+		}
+	}
+	::RegCloseKey(hKeyRet);
+	return 0;
+}
+
+int set_reg_value(HKEY hKey, LPCTSTR lpSubKey, LPCTSTR lpValueName, DWORD dwType, const BYTE *lpData, DWORD cbData)
+{
+	HKEY hKeyRet;
+
+#ifdef _WIN64  
+	if (ERROR_SUCCESS == ::RegOpenKeyEx(hKey, lpSubKey, 0, KEY_SET_VALUE | KEY_WOW64_64KEY, &hKeyRet))
+#else
+	if (ERROR_SUCCESS == ::RegOpenKeyEx(hKey, lpSubKey, 0, KEY_READ, &hKeyRet))
+#endif
+	{
+		if (ERROR_SUCCESS != ::RegSetValueEx(hKeyRet, lpValueName, 0, dwType, lpData, cbData))
+		{
+			return -1;
+		}
+	}
+	::RegCloseKey(hKeyRet);
+	return 0;
+}
+
+int delete_reg_value(HKEY hKey, LPCTSTR lpSubKey, LPCTSTR lpValueName)
+{
+	HKEY hKeyRet;
+
+#ifdef _WIN64  
+	if (ERROR_SUCCESS == ::RegOpenKeyEx(hKey, lpSubKey, 0, KEY_SET_VALUE | KEY_WOW64_64KEY, &hKeyRet))
+#else
+	if (ERROR_SUCCESS == ::RegOpenKeyEx(hKey, lpSubKey, 0, KEY_READ, &hKeyRet))
+#endif
+	{
+		if (ERROR_SUCCESS != ::RegDeleteValue(hKeyRet, lpValueName))
+		{
+			::RegCloseKey(hKeyRet);
+			return -1;
+		}
+	}
+	::RegCloseKey(hKeyRet);
+	return 0;
+}
+
+int delete_reg_key(HKEY hKey, LPCTSTR lpSubKey)
+{
+	if (ERROR_SUCCESS != ::RegDeleteKey(hKey, lpSubKey))
+	{
+		return -1;
+	}
+	return 0;
+}
+
+
+void test_find_reg_key(void)
+{
+	LPCTSTR lpSubKey = _T("SOFTWARE\\TestNode1\\configs\\test1");
+	int ret = find_reg_key(HKEY_LOCAL_MACHINE, lpSubKey);
+	if (ret == 0) 
+	{
+		printf("key exist!\n");
+	}
+	else 
+	{
+		printf("key not found!\n");
+	}
+}
+
+
+void test_create_reg_key(void)
+{
+	LPCTSTR lpSubKey = _T("SOFTWARE\\TestNode1\\configs\\test1");
+	int ret = create_reg_key(HKEY_LOCAL_MACHINE, lpSubKey);
+	if (ret == 0)
+	{
+		printf("%s success!\n", __FUNCTION__);
+	}
+	else
+	{
+		printf("%s failed!\n", __FUNCTION__);
+	}
+}
+
+void test_read_reg_dword(void)
+{
+	LPCTSTR lpSubKey = _T("SOFTWARE\\TestNode1\\GuestTools");
+	LPCTSTR lpValueName = _T("installed");
 	DWORD dwType = REG_DWORD;
-
-	LPCTSTR data_set = _T("SOFTWARE\\FreeRDP\\FreeRDP\\Server");
-	if (ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, data_set, 0, KEY_SET_VALUE | KEY_WOW64_64KEY, &hkey))
+	DWORD dwValue = 0;
+	DWORD dwSize = sizeof(DWORD);
+	int ret = get_reg_value(HKEY_LOCAL_MACHINE, lpSubKey, lpValueName, &dwType, (LPBYTE)(&dwValue), &dwSize);
+	if (ret == 0)
 	{
-		if (ERROR_SUCCESS == ::RegCreateKey(hkey, _T("test"), &hTempKey))
-		{
-			if (ERROR_SUCCESS != ::RegSetValueEx(hTempKey, _T("Name"), 0, REG_DWORD, (CONST BYTE*)&dwValue, sizeof(DWORD)))
-			{
-				printf("写入注册表失败\n");
-			}
-		}
+		printf("%s success!\n", __FUNCTION__);
 	}
-	::RegCloseKey(hkey);
+	else
+	{
+		printf("%s failed!\n", __FUNCTION__);
+	}
+	printf("dwType=%d, dwValue=%d, dwSize=%d\n", dwType, dwValue, dwSize);
 }
 
-void write_reg_sz()
+void test_read_reg_sz(void)
 {
-	HKEY hkey;
-	HKEY hTempKey;
-	char m_name_set[256] = "China";
-
-	DWORD len = strlen(m_name_set) + 1;
-	LPCTSTR data_set = _T("SOFTWARE\\FreeRDP\\FreeRDP\\Server");
-	if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, data_set, 0, KEY_SET_VALUE | KEY_WOW64_64KEY, &hkey))
+	LPCTSTR lpSubKey = _T("SOFTWARE\\TestNode1\\configs\\test1");
+	LPCTSTR lpValueName = _T("log_level");
+	DWORD dwType = REG_SZ;
+	TCHAR dwValue[20] = {0};
+	char value[20] = { 0 };
+	DWORD dwSize = sizeof(dwValue);
+	int ret = get_reg_value(HKEY_LOCAL_MACHINE, lpSubKey, lpValueName, &dwType, (LPBYTE)dwValue, &dwSize);
+	if (ret == 0)
 	{
-		if (ERROR_SUCCESS == ::RegCreateKey(hkey, _T("test"), &hTempKey))
-		{
-			if (ERROR_SUCCESS != ::RegSetValueEx(hTempKey, _T("Name"), 0, REG_SZ, (const BYTE*)m_name_set, len))
-			{
-				printf( "写入错误\n");
-			}
-		}
+		printf("%s success!\n", __FUNCTION__);
 	}
-	::RegCloseKey(hkey);
+	else
+	{
+		printf("%s failed!\n", __FUNCTION__);
+	}
+	WideCharToMultiByte(CP_ACP, 0, dwValue, -1, value, 20, NULL, NULL);
+	printf("dwType=%d, dwValue=%s, dwSize=%d\n", dwType, value, dwSize);
 }
 
-void write_binary()
+void test_write_reg_dword(void)
 {
-	HKEY hkey;
-	HKEY hTempKey;
-	BYTE m_name[10];
-	memset(m_name, 0, sizeof(m_name));
-	m_name[0] = 0xff;
-	m_name[1] = 0xac;
-	m_name[2] = 0x05;
-	m_name[3] = 0x4e;
-
-	LPCTSTR data_set = _T("SOFTWARE\\FreeRDP\\FreeRDP\\Server");
-	if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, data_set, 0, KEY_SET_VALUE | KEY_WOW64_64KEY, &hkey))
+	LPCTSTR lpSubKey = _T("SOFTWARE\\TestNode1\\GuestTools");
+	LPCTSTR lpValueName = _T("installed");
+	DWORD dwType = REG_DWORD;
+	DWORD dwValue = 12;
+	DWORD dwSize = sizeof(DWORD);
+	int ret = set_reg_value(HKEY_LOCAL_MACHINE, lpSubKey, lpValueName, dwType, (LPBYTE)(&dwValue), dwSize);
+	if (ret == 0)
 	{
-		if (ERROR_SUCCESS == ::RegCreateKey(hkey, _T("test"), &hTempKey))
-		{
-			if (ERROR_SUCCESS != ::RegSetValueEx(hTempKey, _T("Name"), 0, REG_BINARY, (unsigned char *)m_name, 5))
-			{
-				printf("写入错误\n");
-			}
-		}
+		printf("%s success!\n", __FUNCTION__);
 	}
-	::RegCloseKey(hkey);
+	else
+	{
+		printf("%s failed!\n", __FUNCTION__);
+	}
+	printf("dwType=%d, dwValue=%d, dwSize=%d\n", dwType, dwValue, dwSize);
 }
 
-void delete_value()
+void test_write_reg_sz(void)
 {
-	HKEY hkey;
-	LPCTSTR data_set = _T("SOFTWARE\\FreeRDP\\FreeRDP\\Server\\test");
-
-	if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, data_set, 0, KEY_SET_VALUE | KEY_WOW64_64KEY, &hkey))
+	LPCTSTR lpSubKey = _T("SOFTWARE\\TestNode1\\configs\\test1");
+	LPCTSTR lpValueName = _T("log_level");
+	DWORD dwType = REG_SZ;
+	TCHAR dwValue[20] = _T("info");
+	char value[20] = {0};
+	DWORD dwSize = sizeof(dwValue);
+	int ret = set_reg_value(HKEY_LOCAL_MACHINE, lpSubKey, lpValueName, dwType, (const BYTE *)dwValue, dwSize);
+	if (ret == 0)
 	{
-		if (ERROR_SUCCESS != ::RegDeleteValue(hkey, _T("Name")))
-		{
-			printf("删除错误\n");
-		}
+		printf("%s success!\n", __FUNCTION__);
 	}
-	::RegCloseKey(hkey);
+	else
+	{
+		printf("%s failed!\n", __FUNCTION__);
+	}
+	WideCharToMultiByte(CP_ACP, 0, dwValue, -1, value, 20, NULL, NULL);
+	printf("dwType=%d, dwValue=%s, dwSize=%d\n", dwType, value, dwSize);
 }
 
-void delete_key()
+void test_delete_reg_value(void)
 {
-	HKEY hkey;
-	LPCTSTR data_set = _T("SOFTWARE\\FreeRDP\\FreeRDP\\Server");
-
-	if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, data_set, 0, KEY_SET_VALUE | KEY_WOW64_64KEY, &hkey))
+	LPCTSTR lpSubKey = _T("SOFTWARE\\TestNode1\\configs\\test1");
+	LPCTSTR lpValueName = _T("log_level");
+	int ret = delete_reg_value(HKEY_LOCAL_MACHINE, lpSubKey, lpValueName);
+	if (ret == 0)
 	{
-		if (ERROR_SUCCESS != ::RegDeleteKey(hkey, _T("test")))
-		{
-			printf("删除错误\n");
-		}
+		printf("%s success!\n", __FUNCTION__);
 	}
-	::RegCloseKey(hkey);
+	else
+	{
+		printf("%s failed!\n", __FUNCTION__);
+	}
+}
+
+void test_delete_reg_key(void)
+{
+	LPCTSTR lpSubKey = _T("SOFTWARE\\TestNode1\\configs\\test1");
+	int ret = delete_reg_key(HKEY_LOCAL_MACHINE, lpSubKey);
+	if (ret == 0)
+	{
+		printf("%s success!\n", __FUNCTION__);
+	}
+	else
+	{
+		printf("%s failed!\n", __FUNCTION__);
+	}
 }
 
 int main()
 {
-	read_dword();
-	read_reg_sz();
-	write_reg_sz();
-	write_binary();
-	delete_value();
-	delete_key();
+	//test_create_reg_key();
+	//test_find_reg_key();
+	//test_read_reg_dword();
+	//test_read_reg_sz();
+	//test_write_reg_dword();
+	//test_write_reg_sz();
+	//test_delete_reg_value();
+	//test_delete_reg_key();
 	system("pause");
 	return 0;
 }
+
