@@ -11,6 +11,11 @@
 #include <QTimer>
 #include <QAudioOutput>
 #include <QPushButton>
+#include <QSlider>
+#include <QLabel>
+#include <QLineEdit>
+#include <QCheckBox>
+
 namespace Ui {
 class MainWindow;
 }
@@ -30,6 +35,10 @@ private slots:
 
     void on_play_clicked();
 
+    void on_slider_changed();
+
+    void on_checkbox_clicked();
+
 
 private:
     Ui::MainWindow *ui;
@@ -39,6 +48,10 @@ private:
     QPushButton* btnStart;
     QPushButton* btnStop;
     QPushButton* btnPlay;
+    QSlider *slider;
+    QLabel *volume;
+    QLineEdit *value;
+    QCheckBox *mute;
 };
 
 #endif // MAINWINDOW_H
