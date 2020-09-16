@@ -22,14 +22,6 @@ CAudioManager::CAudioManager(IPlaybackEvent* pEvent)
 	}
 	if (encoder) {
 		opus_encoder_ctl(encoder, OPUS_SET_VBR(0));//0:CBR, 1:VBR
-		opus_encoder_ctl(encoder, OPUS_SET_VBR_CONSTRAINT(true));
-		opus_encoder_ctl(encoder, OPUS_SET_BITRATE(48000)); //?????
-		opus_encoder_ctl(encoder, OPUS_SET_LSB_DEPTH(16));
-		//opus_encoder_ctl(encoder, OPUS_SET_COMPLEXITY(8));
-		//opus_encoder_ctl(encoder, OPUS_SET_SIGNAL(OPUS_SIGNAL_VOICE));
-		//opus_encoder_ctl(encoder, OPUS_SET_DTX(0));
-		//opus_encoder_ctl(encoder, OPUS_SET_INBAND_FEC(0));
-		//opus_encoder_ctl(encoder, OPUS_SET_PACKET_LOSS_PERC(0));
 	}
 
 	decoder = opus_decoder_create(48000, 2, &err);
