@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#define GL_PRINT(S) (printf("%s\n",#S),S)
+#define GL_PRINT(S) printf("%s\n",#S)
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
