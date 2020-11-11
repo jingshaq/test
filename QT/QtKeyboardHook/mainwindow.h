@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QEvent>
+#include <QComboBox>
 
 namespace Ui {
 class MainWindow;
@@ -17,10 +18,12 @@ public:
     ~MainWindow();
 
 protected:
-    bool eventFilter(QObject* obj, QEvent* event);
+    void setHook();
+    void unHook();
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
 
 private:
-    int count;
     Ui::MainWindow *ui;
 };
 
