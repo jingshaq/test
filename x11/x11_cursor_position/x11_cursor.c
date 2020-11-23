@@ -3,9 +3,16 @@
 #include <X11/extensions/XTest.h>
 #include <stdio.h>
 
-void getMousePosition(int* mouseX,int* mouseY){
+typedef struct POINT{
+	int x;
+	int y;
+}POINT;
+
+void getMousePosition(POINT *pos)
+{
 	Display* dpy;
 	XEvent e;
+	int mouseX=-1,mouseY=-1;
 
 	dpy = XOpenDisplay(NULL);/*获取默认的x11 Display*/
 	//关注全局鼠标点击事件,注意该函数必须调用，否则XNextEvent()无法捕获到鼠标点击事件
@@ -27,19 +34,23 @@ void getMousePosition(int* mouseX,int* mouseY){
 		//XNextEvent()会阻塞等待事件产生
 		XNextEvent(dpy,&e);
 		if(e.type == ButtonPress){/*监测到鼠标点击事件*/
-			*mouseX = e.xmotion.x_root;
-			*mouseY = e.xmotion.y_root;
+			mouseX = e.xmotion.x_root;
+			mouseY = e.xmotion.y_root;
 			break;/*监测到点击后，记录鼠标坐标，便立即退出while循环*/
 		}
 	}
 
+	if(mouseX >=0 && mouseY >=0){
+		pos->x = mouseX;
+		pos->y = mouseY;
+	}
 	XCloseDisplay(dpy);/*关闭x11 Display*/
 }
 
 int main(int argc, char *argv[]){
-	int x,y;
-	getMousePosition(&x,&y);
-	printf("x=%d y=%d\n",x,y);
+	POINT pos;
+	getMousePosition(&pos);
+	printf("x=%d y=%d\n",pos.x,pos.y);
 	return 0;
 }
 
