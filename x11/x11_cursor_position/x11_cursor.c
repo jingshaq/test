@@ -10,6 +10,37 @@ typedef struct POINT{
 
 void getMousePosition(POINT *pos)
 {
+    Display* dpy;
+    XEvent e;
+    int mouseX=-1,mouseY=-1;
+
+    dpy = XOpenDisplay(NULL);
+    Window root = XDefaultRootWindow(dpy);
+    Window root_return;
+    Window child_return;
+    int root_x_return;
+    int root_y_return;
+    int win_x_return;
+    int win_y_return;
+    unsigned int mask_return;
+
+    while (1){
+        if (XQueryPointer(dpy, root, &root_return, &child_return, &root_x_return, &root_y_return, &win_x_return, &win_y_return, &mask_return) == True){
+            mouseX = root_x_return;
+            mouseY = root_y_return;
+            break;
+        }
+    }
+
+    if(mouseX >=0 && mouseY >=0){
+        pos->x = mouseX;
+        pos->y = mouseY;
+    }
+    XCloseDisplay(dpy);
+}
+
+void getMousePosition0(POINT *pos)
+{
 	Display* dpy;
 	XEvent e;
 	int mouseX=-1,mouseY=-1;
