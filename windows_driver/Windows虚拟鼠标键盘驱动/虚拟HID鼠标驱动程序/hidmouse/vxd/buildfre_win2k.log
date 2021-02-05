@@ -1,0 +1,5 @@
+BUILD: Computing Include file dependencies:
+BUILD: c:\program files\microsoft visual studio\vc98\include\exdisp.odl(31): c:\program files\microsoft visual studio\vc98\include\exdisp.odl - invalid include statement: importlib(STDOLE_TLB);
+BUILD: c:\program files\microsoft visual studio\vc98\include\vidsvr.odl(16): c:\program files\microsoft visual studio\vc98\include\vidsvr.odl - invalid include statement: importlib(STDOLE_TLB);
+BUILD: c:\progra~1\micros~3\vc98\include\exdisp.odl(31): c:\progra~1\micros~3\vc98\include\exdisp.odl - invalid include statement: importlib(STDOLE_TLB);
+BUILD: c:\progra~1\micros~3\vc98\include\vidsvr.odl(16): c:\progra~1\micros~3\vc98\include\vidsvr.odl - invalid include statement: importlib(STDOLE_TLB);

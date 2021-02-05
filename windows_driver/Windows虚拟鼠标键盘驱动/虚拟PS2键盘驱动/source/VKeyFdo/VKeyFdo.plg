@@ -1,0 +1,39 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: VKeyFdo - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\leiwhere\LOCALS~1\Temp\RSPA.tmp" with contents
+[
+/nologo /Gz /ML /W3 /WX /Oy /Gy /I "c:\NTDDK\inc\ddk" /I "c:\NTDDK\inc" /D WIN32=100 /D "STD_CALL" /D CONDITION_HANDLING=1 /D NT_UP=1 /D NT_INST=0 /D _NT1X_=100 /D WINNT=1 /D _WIN32_WINNT=0x0400 /D WIN32_LEAN_AND_MEAN=1 /D DEVL=1 /D FPO=1 /D "_IDWBUILD" /D "NDEBUG" /D _DLL=1 /D _X86_=1 /D i386=1 /FR"Release/" /Fo"Release/" /Oxs /Zel -cbstring /QIfdiv- /QIf /GF /c 
+"C:\Projects\Fakey\VKeyFdo\Dispatch.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\leiwhere\LOCALS~1\Temp\RSPA.tmp" 
+Creating temporary file "C:\DOCUME~1\leiwhere\LOCALS~1\Temp\RSPB.tmp" with contents
+[
+int64.lib ntoskrnl.lib hal.lib hidclass.lib /nologo /base:"0x10000" /version:4.0 /entry:"DriverEntry" /incremental:no /pdb:"Release/VKeyFdo.pdb" /debug /debugtype:coff /machine:IX86 /nodefaultlib /out:"..\bin\VKeyFdo.sys" /libpath:"c:\NTDDK\libfre\i386" /libpath:"c:\NTDDK\lib\i386\free" /driver /debug:notmapped,MINIMAL /IGNORE:4001,4037,4039,4065,4070,4078,4087,4089,4096 /MERGE:_PAGE=PAGE /MERGE:_TEXT=.text /SECTION:INIT,d /MERGE:.rdata=.text /FULLBUILD /RELEASE /FORCE:MULTIPLE /OPT:REF /OPTIDATA /align:0x20 /osversion:4.00 /subsystem:native 
+.\Release\Dispatch.obj
+.\Release\Init.obj
+.\Release\Pnp.obj
+.\Release\Wdmvk.res
+\Projects\Fakey\SendKey\Release\SendKey.lib
+]
+Creating command line "link.exe @C:\DOCUME~1\leiwhere\LOCALS~1\Temp\RSPB.tmp"
+<h3>Output Window</h3>
+Compiling...
+Dispatch.cpp
+Linking...
+Creating command line "bscmake.exe /nologo /o"Release/VKeyFdo.bsc"  .\Release\Dispatch.sbr .\Release\Init.sbr .\Release\Pnp.sbr"
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+VKeyFdo.sys - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

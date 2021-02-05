@@ -1,0 +1,112 @@
+;; M2.inf
+
+;; *********  PLEASE READ ***********
+;; The wizard cannot create exact INF files for all buses and device types.
+;; You may have to make changes to this file in order to get your device to
+;; install. In particular, hardware IDs and logical configurations require
+;; intervention.
+;;
+;; The Windows DDK documentation contains an excellent INF reference.
+
+;--------- Version Section ---------------------------------------------------
+
+[Version]
+Signature="$Windows 95$"
+
+; If device fits one of the standard classes, use the name and GUID here,
+; otherwise create your own device class and GUID as this example shows.
+
+Class=Mouse
+ClassGUID={4d36e96f-e325-11ce-bfc1-08002be10318}
+Provider=%ProviderName%
+
+
+;--------- SourceDiskNames and SourceDiskFiles Section -----------------------
+
+; These sections identify source disks and files for installation.  They are
+; shown here as an example, but commented out.
+
+;[SourceDisksNames]
+;1 = "Install Disk",Disk1,,
+
+;[SourceDisksFiles]
+;M2.sys = 1,,
+
+;--------- ClassInstall/ClassInstall32 Section -------------------------------
+
+; Not necessary if using a standard class
+
+; 9X Style
+[ClassInstall]
+Addreg=Class_AddReg
+
+; NT Style
+[ClassInstall32]
+Addreg=Class_AddReg
+
+[Class_AddReg]
+HKR,,,,%DeviceClassName%
+HKR,,Icon,,"-2"
+
+;--------- DestinationDirs Section -------------------------------------------
+
+[DestinationDirs]
+M2_Files_Driver = 10,System32\Drivers
+
+;--------- Manufacturer and Models Sections ----------------------------------
+
+[Manufacturer]
+%MfgName%=Mfg0
+
+[Mfg0]
+%DeviceDesc%=M2_DDI, *M2
+
+;---------- DDInstall Sections -----------------------------------------------
+; --------- Windows 9X -----------------
+
+; Experimentation has shown that DDInstall root names greater than 19 characters
+; cause problems in Windows 98
+
+[M2_DDI]
+CopyFiles=M2_Files_Driver
+AddReg=M2_9X_AddReg
+
+[M2_9X_AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,VHIDMOU.SYS
+HKR, "Parameters", "BreakOnEntry", 0x00010001, 0
+; --------- Windows NT -----------------
+
+[M2_DDI.NT]
+CopyFiles=M2_Files_Driver
+AddReg=M2_NT_AddReg
+
+[M2_DDI.NT.Services]
+Addservice = M2, 0x00000002, M2_AddService
+
+[M2_AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\VHIDMOU.SYS
+
+[M2_NT_AddReg]
+HKLM, "System\CurrentControlSet\Services\M2\Parameters",\
+	"BreakOnEntry", 0x00010001, 0
+
+
+
+; --------- Files (common) -------------
+
+[M2_Files_Driver]
+VHIDMOU.SYS
+
+;--------- Strings Section ---------------------------------------------------
+
+[Strings]
+ProviderName="ljl"
+MfgName="ljldriver"
+DeviceDesc="M2 Driver"
+DeviceClassName="mouse"
+SvcDesc="mouse"

@@ -1,0 +1,33 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: VHIDMOU - Win32 Checked--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "d:\DOCUME~2\ADMINI~1\LOCALS~1\Temp\RSP5.bat" with contents
+[
+@echo off
+d:\PROGRA~1\Compuware\DriverStudio\DriverWorks\bin\nmsym /trans:source,package,always .\objchk\i386\VHIDMOU.sys
+]
+Creating command line "d:\DOCUME~2\ADMINI~1\LOCALS~1\Temp\RSP5.bat"
+<h3>Output Window</h3>
+---------------------------Build SoftICE Symbols----------------------------
+
+Compuware NM32 Symbol Translator/Loader version 4.3.2
+(C) Compuware Corporation, 1996-2004
+
+MODULE=.\objchk\i386\VHIDMOU.sys
+PROMPT=OFF
+SoftICE is not active
+Error translating D:\拖机系统\虚拟鼠标驱动程序\hidmouse\objchk\i386\VHIDMOU.sys: Matching PDB file not found.
+执行 c:\windows\system32\cmd.exe 时出错.
+
+
+
+<h3>Results</h3>
+VHIDMOU.sys - 1 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

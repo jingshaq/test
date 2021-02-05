@@ -1,0 +1,56 @@
+# Microsoft Developer Studio Generated Dependency File, included by VKeyFdo.mak
+
+.\Dispatch.cpp : \
+	"..\inc\vkIoctl.h"\
+	".\kbdmou.h"\
+	".\VKeyFdo.h"\
+	"c:\ntddk\inc\alpharef.h"\
+	"c:\ntddk\inc\basetsd.h"\
+	"c:\ntddk\inc\bugcodes.h"\
+	"c:\ntddk\inc\guiddef.h"\
+	"c:\ntddk\inc\ia64reg.h"\
+	"c:\ntddk\inc\ntddkbd.h"\
+	"c:\ntddk\inc\ntddmou.h"\
+	"c:\ntddk\inc\ntdef.h"\
+	"c:\ntddk\inc\ntiologc.h"\
+	"c:\ntddk\inc\ntstatus.h"\
+	"c:\ntddk\inc\wdm.h"\
+	"c:\ntddk\inc\wmidata.h"\
+	
+
+.\Init.cpp : \
+	"..\inc\vkIoctl.h"\
+	".\kbdmou.h"\
+	".\VKeyFdo.h"\
+	"c:\ntddk\inc\alpharef.h"\
+	"c:\ntddk\inc\basetsd.h"\
+	"c:\ntddk\inc\bugcodes.h"\
+	"c:\ntddk\inc\guiddef.h"\
+	"c:\ntddk\inc\ia64reg.h"\
+	"c:\ntddk\inc\ntddkbd.h"\
+	"c:\ntddk\inc\ntddmou.h"\
+	"c:\ntddk\inc\ntdef.h"\
+	"c:\ntddk\inc\ntiologc.h"\
+	"c:\ntddk\inc\ntstatus.h"\
+	"c:\ntddk\inc\wdm.h"\
+	"c:\ntddk\inc\wmidata.h"\
+	
+
+.\Pnp.cpp : \
+	"..\inc\vkIoctl.h"\
+	".\GUIDs.h"\
+	".\kbdmou.h"\
+	".\VKeyFdo.h"\
+	"c:\ntddk\inc\alpharef.h"\
+	"c:\ntddk\inc\basetsd.h"\
+	"c:\ntddk\inc\bugcodes.h"\
+	"c:\ntddk\inc\guiddef.h"\
+	"c:\ntddk\inc\ia64reg.h"\
+	"c:\ntddk\inc\ntddkbd.h"\
+	"c:\ntddk\inc\ntddmou.h"\
+	"c:\ntddk\inc\ntdef.h"\
+	"c:\ntddk\inc\ntiologc.h"\
+	"c:\ntddk\inc\ntstatus.h"\
+	"c:\ntddk\inc\wdm.h"\
+	"c:\ntddk\inc\wmidata.h"\
+	

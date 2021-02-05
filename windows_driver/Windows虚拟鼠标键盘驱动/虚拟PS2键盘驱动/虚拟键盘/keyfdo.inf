@@ -1,0 +1,53 @@
+[Version]
+Signature="$Chicago$"
+Class=Keyboard
+Provider=%zhang%
+DriverVer=02/02/2004,1.0.0.0
+
+[Manufacturer]
+%zhang% = VKBModels
+
+[VKBModels]
+%VirtualKeyboard% = VKboard.Install, VKeyboard
+
+[DestinationDirs]
+DefaultDestDir  = 12
+
+[SourceDisksNames]
+1="Install #1",,,
+
+[SourceDisksFiles.x86]
+vkeyfdo.sys=1,.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Windows 2000
+
+[VKboard.Install.NTx86]
+CopyFiles=VKboard.Files.Driver.NTx86
+
+[VKboard.Files.Driver.NTx86]
+vkeyfdo.sys,,,%COPYFLG_NOSKIP%
+
+[VKboard.Install.NTx86.Services]
+AddService = vkeyfdo, %SPSVCINST_ASSOCSERVICE%, VKboard.Service
+
+[VKboard.Service]
+DisplayName    = %VKboard.ServiceName%
+ServiceType    = %SERVICE_KERNEL_DRIVER%
+StartType      = %SERVICE_DEMAND_START%
+ErrorControl   = %SERVICE_ERROR_NORMAL%
+ServiceBinary  = %10%\System32\Drivers\vkeyfdo.sys
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Strings
+
+[Strings]
+VirtualKeyboard = "Virtual Keyboard"
+zhang = "leiwhere.zhang"
+VKboard.ServiceName="Virtual Keybord Function Driver"
+SPSVCINST_ASSOCSERVICE=0x00000002	; Driver service is associated with device being installed
+COPYFLG_NOSKIP=2	; Do not allow user to skip file
+SERVICE_KERNEL_DRIVER=1
+SERVICE_AUTO_START=2
+SERVICE_DEMAND_START=3
+SERVICE_ERROR_NORMAL=1

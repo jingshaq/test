@@ -1,0 +1,16 @@
+# Microsoft Developer Studio Generated Dependency File, included by SendKey.mak
+
+.\SendKey.cpp : \
+	"..\inc\vkIoctl.h"\
+	".\SendKey.h"\
+	".\StdAfx.h"\
+	
+
+.\sendkey.rc : \
+	".\res\sendkey.ico"\
+	".\res\Test.rc2"\
+	
+
+.\StdAfx.cpp : \
+	".\StdAfx.h"\
+	
